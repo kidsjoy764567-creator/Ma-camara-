@@ -1,155 +1,19 @@
 package com.macamara.app;
-
-import android.Manifest;
-import android.app.AlertDialog;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.widget.Button;
-import android.widget.TextView;
-
-import androidx.activity.ComponentActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.Comparator;
-
-public class MainActivity extends ComponentActivity {
-    private static final int REQUEST_PERMISSIONS = 40;
-    private final Handler handler = new Handler(Looper.getMainLooper());
-    private TextView status, timer;
-    private Button startStop, remember;
-    private long startedAt = 0L;
-
-    private final Runnable clock = new Runnable() {
-        @Override public void run() {
-            if (startedAt > 0) {
-                long seconds = Math.max(0, (System.currentTimeMillis() - startedAt) / 1000);
-                timer.setText(String.format(java.util.Locale.US, "%02d:%02d:%02d",
-                        seconds / 3600, (seconds / 60) % 60, seconds % 60));
-                handler.postDelayed(this, 1000);
-            }
-        }
-    };
-
-    @Override protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        status = findViewById(R.id.status);
-        timer = findViewById(R.id.timer);
-        startStop = findViewById(R.id.startStop);
-        remember = findViewById(R.id.remember);
-        Button timeline = findViewById(R.id.timeline);
-
-        startStop.setOnClickListener(v -> {
-            if (RecordingService.isRecording) stopMemory();
-            else requestAndStart();
-        });
-        remember.setOnClickListener(v -> rememberIncident());
-        timeline.setOnClickListener(v -> showTimeline());
-
-        if (RecordingService.isRecording) enterRecordingUi();
-    }
-
-    private void requestAndStart() {
-        String[] permissions = {
-                Manifest.permission.CAMERA,
-                Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.POST_NOTIFICATIONS
-        };
-        boolean missing = false;
-        for (String p : permissions) {
-            if (ContextCompat.checkSelfPermission(this, p) != PackageManager.PERMISSION_GRANTED) {
-                missing = true; break;
-            }
-        }
-        if (missing) {
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSIONS);
-        } else startMemory();
-    }
-
-    @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
-        super.onRequestPermissionsResult(requestCode, permissions, results);
-        if (requestCode == REQUEST_PERMISSIONS) {
-            boolean ok = true;
-            for (int r : results) if (r != PackageManager.PERMISSION_GRANTED) ok = false;
-            if (ok) startMemory();
-            else status.setText("Camera, microphone and notification permissions are required.");
-        }
-    }
-
-    private void startMemory() {
-        ContextCompat.startForegroundService(this, new Intent(this, RecordingService.class)
-                .setAction(RecordingService.ACTION_START));
-        enterRecordingUi();
-    }
-
-    private void stopMemory() {
-        startService(new Intent(this, RecordingService.class).setAction(RecordingService.ACTION_STOP));
-        RecordingService.isRecording = false;
-        startedAt = 0;
-        handler.removeCallbacks(clock);
-        status.setText("Memory saved locally");
-        startStop.setText("START MEMORY");
-        remember.setEnabled(false);
-        timer.setText("00:00:00");
-    }
-
-    private void enterRecordingUi() {
-        RecordingService.isRecording = true;
-        startedAt = System.currentTimeMillis();
-        status.setText("● RECORDING — visible memory capture active");
-        startStop.setText("STOP & SAVE MEMORY");
-        remember.setEnabled(true);
-        handler.removeCallbacks(clock);
-        handler.post(clock);
-    }
-
-    private void rememberIncident() {
-        try {
-            File marker = new File(getExternalFilesDir(null), "Memory/REMEMBERED_" +
-                    System.currentTimeMillis() + ".txt");
-            File parent = marker.getParentFile();
-            if (parent != null) parent.mkdirs();
-            try (java.io.FileOutputStream out = new java.io.FileOutputStream(marker)) {
-                String data = "Incident remembered at " + new java.util.Date() +
-                        "\nCurrent recording segment: " + RecordingService.currentSegmentName;
-                out.write(data.getBytes(java.nio.charset.StandardCharsets.UTF_8));
-            }
-            status.setText("Incident bookmarked in memory");
-        } catch (Exception e) {
-            status.setText("Could not create incident bookmark");
-        }
-    }
-
-    private void showTimeline() {
-        File dir = new File(getExternalFilesDir(null), "Memory");
-        File[] files = dir.listFiles();
-        if (files == null || files.length == 0) {
-            new AlertDialog.Builder(this).setTitle("Memory Timeline")
-                    .setMessage("No saved clips yet. Start Memory to create your first video timeline.")
-                    .setPositiveButton("OK", null).show();
-            return;
-        }
-        Arrays.sort(files, Comparator.comparingLong(File::lastModified).reversed());
-        StringBuilder text = new StringBuilder();
-        int count = 0;
-        for (File f : files) {
-            if (count++ >= 20) break;
-            text.append("• ").append(f.getName()).append("\n");
-        }
-        new AlertDialog.Builder(this).setTitle("Memory Timeline")
-                .setMessage(text.toString())
-                .setPositiveButton("OK", null).show();
-    }
-
-    @Override protected void onDestroy() {
-        super.onDestroy();
-        handler.removeCallbacks(clock);
-    }
+import android.Manifest;import android.app.*;import android.content.*;import android.content.pm.PackageManager;import android.net.Uri;import android.os.*;import android.view.*;import android.widget.*;import androidx.activity.ComponentActivity;import androidx.core.app.ActivityCompat;import androidx.core.content.ContextCompat;import java.io.File;import java.text.SimpleDateFormat;import java.util.*;
+public class MainActivity extends ComponentActivity{
+ static final int REQ=40; Handler h=new Handler(Looper.getMainLooper()); MemoryStore db; TextView status,timer,clock,clips,vehicles,incidents,badge; Button start,remember; long started=0;
+ Runnable tick=()->{clock.setText(new SimpleDateFormat("HH:mm:ss",Locale.US).format(new Date()));if(started>0){long s=(System.currentTimeMillis()-started)/1000;timer.setText(String.format(Locale.US,"%02d:%02d:%02d",s/3600,(s/60)%60,s%60));}h.postDelayed(tick,1000);};
+ public void onCreate(Bundle b){super.onCreate(b);setContentView(R.layout.activity_main);db=new MemoryStore(this);status=findViewById(R.id.subtitle);timer=new TextView(this);clock=findViewById(R.id.clock);clips=findViewById(R.id.statClips);vehicles=findViewById(R.id.statVehicles);incidents=findViewById(R.id.statIncidents);start=findViewById(R.id.startStop);remember=findViewById(R.id.remember);badge=findViewById(R.id.recBadge);findViewById(R.id.timeline).setOnClickListener(v->showMemory());findViewById(R.id.search).setOnClickListener(v->showSearch());start.setOnClickListener(v->{if(RecordingService.isRecording)stopMemory();else requestStart();});remember.setOnClickListener(v->remember());refresh();h.post(tick);}
+ void requestStart(){String[] p={Manifest.permission.CAMERA,Manifest.permission.RECORD_AUDIO,Manifest.permission.POST_NOTIFICATIONS};List<String> m=new ArrayList<>();for(String x:p)if(Build.VERSION.SDK_INT<33&&x.equals(Manifest.permission.POST_NOTIFICATIONS)||ContextCompat.checkSelfPermission(this,x)!=PackageManager.PERMISSION_GRANTED)m.add(x);if(m.isEmpty())startMemory();else ActivityCompat.requestPermissions(this,m.toArray(new String[0]),REQ);}
+ public void onRequestPermissionsResult(int r,String[] p,int[] g){super.onRequestPermissionsResult(r,p,g);if(r==REQ){boolean ok=true;for(int x:g)if(x!=PackageManager.PERMISSION_GRANTED)ok=false;if(ok)startMemory();else Toast.makeText(this,"Camera permission is required for Memory.",Toast.LENGTH_LONG).show();}}
+ void startMemory(){ContextCompat.startForegroundService(this,new Intent(this,RecordingService.class).setAction(RecordingService.ACTION_START));RecordingService.isRecording=true;started=System.currentTimeMillis();start.setText("STOP & SAVE MEMORY");remember.setEnabled(true);badge.setText("● REC");badge.setTextColor(ContextCompat.getColor(this,R.color.red));status.setText("LIVE MEMORY • visible recording");}
+ void stopMemory(){startService(new Intent(this,RecordingService.class).setAction(RecordingService.ACTION_STOP));RecordingService.isRecording=false;started=0;start.setText("START MEMORY");remember.setEnabled(false);badge.setText("● READY");badge.setTextColor(ContextCompat.getColor(this,R.color.muted));status.setText("Memory saved locally");refresh();}
+ void remember(){db.incidentNear(System.currentTimeMillis());Toast.makeText(this,"Incident marked. Current memory clip is protected.",Toast.LENGTH_SHORT).show();refresh();}
+ void refresh(){clips.setText(db.count(null)+"\nCLIPS");vehicles.setText(db.count("vehicle IS NOT NULL AND vehicle<>''")+"\nVEHICLES");incidents.setText(db.count("incident=1")+"\nINCIDENTS");}
+ void showMemory(){List<String[]> a=db.recent();LinearLayout box=box();if(a.isEmpty())add(box,"No memories yet.");for(String[] x:a){Button b=new Button(this);b.setText(label(x));b.setOnClickListener(v->play(x[0]));box.addView(b);}new AlertDialog.Builder(this).setTitle("MEMORY TIMELINE").setView(wrap(box)).setPositiveButton("CLOSE",null).show();}
+ void showSearch(){EditText q=new EditText(this);q.setHint("car, plate, incident, Alto...");new AlertDialog.Builder(this).setTitle("WHAT DO YOU REMEMBER?").setView(q).setPositiveButton("SEARCH",(d,w)->{List<String[]> a=db.search(q.getText().toString());LinearLayout box=box();if(a.isEmpty())add(box,"No indexed memory matched.");for(String[] x:a){Button b=new Button(this);b.setText(label(x));b.setOnClickListener(v->play(x[0]));box.addView(b);}new AlertDialog.Builder(this).setTitle("SEARCH RESULTS").setView(wrap(box)).setPositiveButton("CLOSE",null).show();}).setNegativeButton("CANCEL",null).show();}
+ String label(String[] x){String when=new SimpleDateFormat("dd MMM, HH:mm:ss",Locale.US).format(new Date(Long.parseLong(x[2])));String v=(x[4]==null||x[4].isEmpty())?"vehicle not identified":x[4];String p=(x[5]==null||x[5].isEmpty())?"plate unreadable":x[5];return (x[7].equals("1")?"★ INCIDENT  ":"")+when+"\n"+v+" • "+p;}
+ void play(String id){String p=db.path(Long.parseLong(id));if(p==null)return;VideoView vv=new VideoView(this);vv.setVideoURI(Uri.fromFile(new File(p)));vv.setMediaController(new android.widget.MediaController(this));vv.start();new AlertDialog.Builder(this).setTitle("MEMORY CLIP").setView(vv).setPositiveButton("CLOSE",null).show();}
+ LinearLayout box(){LinearLayout l=new LinearLayout(this);l.setOrientation(LinearLayout.VERTICAL);l.setPadding(18,8,18,8);return l;}View wrap(View v){ScrollView s=new ScrollView(this);s.addView(v);s.setPadding(8,8,8,8);return s;}void add(LinearLayout l,String s){TextView t=new TextView(this);t.setText(s);t.setTextColor(ContextCompat.getColor(this,R.color.text));t.setPadding(8,18,8,18);l.addView(t);}
+ protected void onDestroy(){h.removeCallbacks(tick);super.onDestroy();}
 }
