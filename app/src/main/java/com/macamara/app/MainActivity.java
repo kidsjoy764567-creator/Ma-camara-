@@ -116,9 +116,11 @@ public class MainActivity extends ComponentActivity {
                     System.currentTimeMillis() + ".txt");
             File parent = marker.getParentFile();
             if (parent != null) parent.mkdirs();
-            java.nio.file.Files.writeString(marker.toPath(),
-                    "Incident remembered at " + new java.util.Date() +
-                    "\nCurrent recording segment: " + RecordingService.currentSegmentName);
+            try (java.io.FileOutputStream out = new java.io.FileOutputStream(marker)) {
+                String data = "Incident remembered at " + new java.util.Date() +
+                        "\nCurrent recording segment: " + RecordingService.currentSegmentName;
+                out.write(data.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            }
             status.setText("Incident bookmarked in memory");
         } catch (Exception e) {
             status.setText("Could not create incident bookmark");
