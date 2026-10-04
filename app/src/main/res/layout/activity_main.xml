@@ -1,72 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#070B12">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/bg">
+<LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="18dp">
+<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical"><LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical"><TextView android:id="@+id/title" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="MA CAMARA" android:textColor="@color/text" android:textSize="25sp" android:textStyle="bold"/><TextView android:id="@+id/subtitle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="MEMORY CAMERA" android:textColor="@color/muted" android:textSize="11sp"/></LinearLayout><TextView android:id="@+id/clock" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="00:00:00" android:textColor="@color/text" android:textSize="16sp" android:textStyle="bold"/></LinearLayout>
+<FrameLayout android:id="@+id/previewFrame" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="14dp" android:background="@color/panel"><TextView android:id="@+id/previewLabel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:text="CAMERA MEMORY READY
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="MA CAMARA"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Memory camera ready"
-            android:textColor="#9AA7BA"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/timer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="26dp"
-            android:text="00:00:00"
-            android:textColor="#FFFFFF"
-            android:textSize="42sp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/startStop"
-            android:layout_width="match_parent"
-            android:layout_height="58dp"
-            android:layout_marginTop="28dp"
-            android:text="START MEMORY"
-            android:textAllCaps="false" />
-
-        <Button
-            android:id="@+id/remember"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:layout_marginTop="14dp"
-            android:enabled="false"
-            android:text="REMEMBER THIS INCIDENT"
-            android:textAllCaps="false" />
-
-        <Button
-            android:id="@+id/timeline"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:layout_marginTop="14dp"
-            android:text="OPEN MEMORY TIMELINE"
-            android:textAllCaps="false" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:text="V1 records visible video in short local clips. Recording stays active through a foreground service. AI vehicle/plate indexing is planned for the next layer and is not claimed as guaranteed in this build."
-            android:textColor="#7F8DA3"
-            android:textSize="13sp" />
-    </LinearLayout>
-</ScrollView>
+Start Memory to begin visible recording" android:gravity="center" android:textColor="@color/muted" android:textSize="14sp"/><TextView android:id="@+id/recBadge" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="top|start" android:layout_margin="12dp" android:padding="8dp" android:text="● READY" android:textColor="@color/muted" android:textSize="12sp" android:textStyle="bold"/></FrameLayout>
+<LinearLayout android:layout_width="match_parent" android:layout_height="64dp" android:orientation="horizontal" android:layout_marginTop="10dp"><TextView android:id="@+id/statClips" android:layout_width="0dp" android:layout_height="64dp" android:layout_weight="1" android:background="@drawable/card_bg" android:gravity="center" android:text="0
+CLIPS" android:textColor="@color/text" android:textSize="12sp"/><TextView android:id="@+id/statVehicles" android:layout_width="0dp" android:layout_height="64dp" android:layout_weight="1" android:layout_marginStart="8dp" android:background="@drawable/card_bg" android:gravity="center" android:text="0
+VEHICLES" android:textColor="@color/text" android:textSize="12sp"/><TextView android:id="@+id/statIncidents" android:layout_width="0dp" android:layout_height="64dp" android:layout_weight="1" android:layout_marginStart="8dp" android:background="@drawable/card_bg" android:gravity="center" android:text="0
+INCIDENTS" android:textColor="@color/text" android:textSize="12sp"/></LinearLayout>
+<Button android:id="@+id/startStop" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="10dp" android:text="START MEMORY" android:textStyle="bold"/><Button android:id="@+id/remember" android:layout_width="match_parent" android:layout_height="48dp" android:layout_marginTop="6dp" android:text="REMEMBER THIS INCIDENT" android:enabled="false"/>
+<LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:layout_marginTop="6dp"><Button android:id="@+id/timeline" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="MEMORY"/><Button android:id="@+id/search" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:layout_marginStart="6dp" android:text="SEARCH"/></LinearLayout></LinearLayout></FrameLayout>
