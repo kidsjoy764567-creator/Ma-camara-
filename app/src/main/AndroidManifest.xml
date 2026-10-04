@@ -9,6 +9,8 @@
 
     <application
         android:allowBackup="false"
+        android:icon="@drawable/ma_camara_logo"
+        android:roundIcon="@drawable/ma_camara_logo"
         android:label="MA CAMARA"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -20,7 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <service
             android:name=".RecordingService"
             android:exported="false"
