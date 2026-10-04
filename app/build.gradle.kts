@@ -2,7 +2,7 @@ plugins { id("com.android.application") }
 android {
     namespace = "com.macamara.app"
     compileSdk = 35
-    defaultConfig { applicationId = "com.macamara.app"; minSdk = 26; targetSdk = 35; versionCode = 3; versionName = "2.0.1" }
+    defaultConfig { applicationId = "com.macamara.app"; minSdk = 26; targetSdk = 35; versionCode = 4; versionName = "2.1.0" }
     buildTypes { release { isMinifyEnabled = false; proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro") } }
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
 }
@@ -15,6 +15,7 @@ dependencies {
     implementation("androidx.camera:camera-camera2:1.4.1")
     implementation("androidx.camera:camera-lifecycle:1.4.1")
     implementation("androidx.camera:camera-video:1.4.1")
+    implementation("androidx.camera:camera-view:1.4.1")
     implementation("com.google.mlkit:object-detection:17.0.2")
     implementation("com.google.mlkit:text-recognition:16.0.1")
 }
