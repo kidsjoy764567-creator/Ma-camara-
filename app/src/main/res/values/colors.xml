@@ -1,4 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="black">#070B12</color>
-</resources>
+<resources><color name="bg">#070A0F</color><color name="panel">#101722</color><color name="line">#263344</color><color name="text">#F4F7FB</color><color name="muted">#8C9AAD</color><color name="accent">#62A8FF</color><color name="green">#43E6A0</color><color name="red">#FF5268</color><color name="gold">#FFD166</color></resources>
