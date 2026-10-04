@@ -1,11 +1,30 @@
 plugins { id("com.android.application") }
+
 android {
     namespace = "com.macamara.app"
     compileSdk = 35
-    defaultConfig { applicationId = "com.macamara.app"; minSdk = 26; targetSdk = 35; versionCode = 5; versionName = "2.1.1" }
-    buildTypes { release { isMinifyEnabled = false; proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro") } }
-    compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
+
+    defaultConfig {
+        applicationId = "com.macamara.app"
+        minSdk = 26
+        targetSdk = 35
+        versionCode = 6
+        versionName = "2.2.0"
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
 }
+
 dependencies {
     implementation("androidx.core:core:1.15.0")
     implementation("androidx.appcompat:appcompat:1.7.0")
