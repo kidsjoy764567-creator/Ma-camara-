@@ -45,7 +45,7 @@ public class ClipAnalyzer {
         store.addAnalysis(clipId,vehicle[0],plate[0],conf[0]);
         od.close(); tr.close();
        }));
-   } catch (IOException | RuntimeException ignored) {
+   } catch (RuntimeException ignored) {
    } finally {
     try { r.release(); } catch (IOException ignored) { }
    }
