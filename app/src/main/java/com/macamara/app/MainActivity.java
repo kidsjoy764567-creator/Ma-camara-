@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.*;
 import android.widget.*;
+import android.view.View;
 import androidx.activity.ComponentActivity;
 import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
