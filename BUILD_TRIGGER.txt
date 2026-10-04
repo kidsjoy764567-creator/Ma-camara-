@@ -1,0 +1,1 @@
+Build trigger after compiler fix. The APK build must pass before release.
