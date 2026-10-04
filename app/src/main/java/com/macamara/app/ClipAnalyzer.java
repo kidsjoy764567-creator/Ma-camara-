@@ -47,7 +47,7 @@ public class ClipAnalyzer {
        }));
    } catch (IOException | RuntimeException ignored) {
    } finally {
-    r.release();
+    try { r.release(); } catch (IOException ignored) { }
    }
   }).start();
  }
